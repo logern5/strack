@@ -1,0 +1,5 @@
+<asciiworld>
+Apt pkg libgd-dev (gd)
+Apt pkg libshp-dev (shapelib)
+Apt pkg libshp2 (shapelib)
+</asciiworld>
