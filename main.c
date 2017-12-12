@@ -91,21 +91,25 @@ int main(void){
 		while (tim<dests.dest[i+1].arrival){
 			showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 			struct tm *utc = gmtime((time_t *)&tim);
-			/*TODO: Find percentalong=elapsedTime/totalTime(aka nextarriv-thisdepart)*/
+			//*TODO: Find percentalong=elapsedTime/totalTime(aka nextarriv-thisdepart)*/
+			int elapsedtime = tim-dests.dest[i].departure;
+			int totaltime = dests.dest[i+1].arrival-dests.dest[i].departure;
+			float percentalong = (float)elapsedtime/(float)totaltime;
+			printf("Percentalong: %f", percentalong*(float)100);
 			/*TODO: Interpolate position from percentalong*/
 			printf("Last location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i].city, status, (utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
+			sleep(SLEEPTIME);
 			clr();
 			tim = (int)time(NULL)-offset;
-			sleep(SLEEPTIME);
 		}
 		status = "Landed";
 		while (tim<dests.dest[i+1].departure){ /*we have arrived/landed*/
                         showworld(dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
 			struct tm *utc = gmtime((time_t *)&tim);
 			printf("Current location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i+1].city, status,(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
+			sleep(SLEEPTIME);
 			clr();
                         tim = (int)time(NULL)-offset;
-			sleep(SLEEPTIME);
 		}
 		clr();
 	}
