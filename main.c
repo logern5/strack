@@ -89,14 +89,22 @@ int main(void){
 		status = "In transit";
 		showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 		while (tim<dests.dest[i+1].arrival){
-			showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
-			struct tm *utc = gmtime((time_t *)&tim);
-			//*TODO: Find percentalong=elapsedTime/totalTime(aka nextarriv-thisdepart)*/
+			/*TODO: Change from linear interpolation to spherical/great circle route interpolation*/
 			int elapsedtime = tim-dests.dest[i].departure;
 			int totaltime = dests.dest[i+1].arrival-dests.dest[i].departure;
 			float percentalong = (float)elapsedtime/(float)totaltime;
-			printf("Percentalong: %f", percentalong*(float)100);
-			/*TODO: Interpolate position from percentalong*/
+			struct coords start;
+			start.lat = dests.dest[i].location.lat;
+			start.lng = dests.dest[i].location.lng;
+			struct coords end;
+			end.lat = dests.dest[i+1].location.lat;
+			end.lng = dests.dest[i+1].location.lng;
+			struct coords crd = interpolate(start,end,percentalong);
+			showworld(crd.lat,crd.lng);
+			struct tm *utc = gmtime((time_t *)&tim);
+			printf("Percentalong: %f ", percentalong*(float)100);
+			printf("Coords: Lat:%f, Lng:%f ", crd.lat, crd.lng);
+			printf("Next coords: Lat:%f, Lng:%f", dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
 			printf("Last location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i].city, status, (utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
 			sleep(SLEEPTIME);
 			clr();

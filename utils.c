@@ -5,9 +5,11 @@ struct coords{
 	float lat;
 	float lng;
 };
-struct coords interpolate(int x1, int x2, int y1, int y2,float percentalong){
-	float x = x1+(x2-x1)*percentalong;
-	float y = y1+(y2-y1)*percentalong;
+struct coords interpolate(struct coords start, struct coords end, float percentalong){
+	//float x = x1+(x2-x1)*percentalong; /*x1+((x2-x1)*percentalong)*/
+	//float y = y1+(y2-y1)*percentalong;
+	float x = start.lat+(end.lat-start.lat)*percentalong;
+	float y = start.lng+(end.lng-start.lng)*percentalong;
 	struct coords c;
 	c.lat = x;
 	c.lng = y;
