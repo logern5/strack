@@ -70,7 +70,6 @@ struct destinations getdests(cJSON *root){
 }
 char* getfingerprint(cJSON *root){
 	cJSON *fingerprint = cJSON_GetObjectItemCaseSensitive(root,"fingerprint");
-	//printf("Fingerprint %s", fingerprint->valuestring);
 	return fingerprint->valuestring;
 }
 char* getinfo (struct query *q){

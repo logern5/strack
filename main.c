@@ -89,7 +89,6 @@ int main(void){
 		status = "In transit";
 		showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 		while (tim<dests.dest[i+1].arrival){
-			/*TODO: Change from linear interpolation to spherical/great circle route interpolation*/
 			int elapsedtime = tim-dests.dest[i].departure;
 			int totaltime = dests.dest[i+1].arrival-dests.dest[i].departure;
 			float percentalong = (float)elapsedtime/(float)totaltime;
@@ -99,7 +98,8 @@ int main(void){
 			struct coords end;
 			end.lat = dests.dest[i+1].location.lat;
 			end.lng = dests.dest[i+1].location.lng;
-			struct coords crd = interpolate(start,end,percentalong);
+			//struct coords crd = interpolate(start,end,percentalong);
+			struct coords crd = slerp(start,end,percentalong);
 			showworld(crd.lat,crd.lng);
 			struct tm *utc = gmtime((time_t *)&tim);
 			printf("Percentalong: %f ", percentalong*(float)100);
@@ -121,6 +121,6 @@ int main(void){
 		}
 		clr();
 	}
-	free(status);
+	//free(status);
 	return 0;
 }
