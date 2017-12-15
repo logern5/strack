@@ -8,9 +8,9 @@
 #include "api.c"
 #define SLEEPTIME 5
 #if defined(TIMEOFFSET)
-int offset = TIMEOFFSET;
+long offset = TIMEOFFSET;
 #elif !defined(AUTO_JSON_OFFSET)
-int offset = 0;
+long offset = 0;
 #endif
 #if defined(_WIN32) && !defined(_CYGWIN_)
 #define clr() system("cls"); /*Clear screen on Windows using a cmd command*/
@@ -76,12 +76,12 @@ int main(void){
 	#if defined(AUTO_JSON_OFFSET)
 	long now = time(NULL);
 	long depart = dests.dest[0].departure;
-	int offset = (int)(now-depart);
+	long offset = now-depart;
 	#endif
-	int tim = (int)time(NULL)-offset;
-	if (tim < (int)dests.dest[0].departure){
+	long tim = (long)time(NULL)-offset;
+	if (tim < dests.dest[0].departure){
 		fprintf(stderr,"It is not Christmas Eve yet!\n");
-		fprintf(stderr,"Current POSIX time:%d\nDeparture POSIX time:%li\n", tim,dests.dest[0].departure);
+		fprintf(stderr,"Current POSIX time:%li\nDeparture POSIX time:%li\n", tim,dests.dest[0].departure);
 		exit(-1);
 	}
 	char *status = "In transit";
@@ -89,8 +89,8 @@ int main(void){
 		status = "In transit";
 		showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 		while (tim<dests.dest[i+1].arrival){
-			int elapsedtime = tim-dests.dest[i].departure;
-			int totaltime = dests.dest[i+1].arrival-dests.dest[i].departure;
+			long elapsedtime = tim-dests.dest[i].departure;
+			long totaltime = dests.dest[i+1].arrival-dests.dest[i].departure;
 			float percentalong = (float)elapsedtime/(float)totaltime;
 			struct coords start;
 			start.lat = dests.dest[i].location.lat;
@@ -98,17 +98,18 @@ int main(void){
 			struct coords end;
 			end.lat = dests.dest[i+1].location.lat;
 			end.lng = dests.dest[i+1].location.lng;
-			//struct coords crd = interpolate(start,end,percentalong);
 			struct coords crd = slerp(start,end,percentalong);
 			showworld(crd.lat,crd.lng);
 			struct tm *utc = gmtime((time_t *)&tim);
 			printf("Percentalong: %f ", percentalong*(float)100);
 			printf("Coords: Lat:%f, Lng:%f ", crd.lat, crd.lng);
-			printf("Next coords: Lat:%f, Lng:%f", dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
+			//printf("Next coords: Lat:%f, Lng:%f", dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
+			printf("Next location: %s ", dests.dest[i+1].city);
+			printf("Time to next location :%f ",(float)(dests.dest[i+1].arrival-tim)/60.0F);
 			printf("Last location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i].city, status, (utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
 			sleep(SLEEPTIME);
 			clr();
-			tim = (int)time(NULL)-offset;
+			tim = (long)time(NULL)-offset;
 		}
 		status = "Landed";
 		while (tim<dests.dest[i+1].departure){ /*we have arrived/landed*/
@@ -117,7 +118,7 @@ int main(void){
 			printf("Current location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i+1].city, status,(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
 			sleep(SLEEPTIME);
 			clr();
-                        tim = (int)time(NULL)-offset;
+                        tim = (long)time(NULL)-offset;
 		}
 		clr();
 	}
