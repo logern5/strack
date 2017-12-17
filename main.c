@@ -84,9 +84,7 @@ int main(void){
 		fprintf(stderr,"Current POSIX time:%li\nDeparture POSIX time:%li\n", tim,dests.dest[0].departure);
 		exit(-1);
 	}
-	char *status = "In transit";
 	for(int i=0;i<dests.length;i++){
-		status = "In transit";
 		showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 		while (tim<dests.dest[i+1].arrival){
 			long elapsedtime = tim-dests.dest[i].departure;
@@ -100,32 +98,24 @@ int main(void){
 			end.lng = dests.dest[i+1].location.lng;
 			struct coords crd = slerp(start,end,percentalong);
 			showworld(crd.lat,crd.lng);
-			struct tm *utc = gmtime((time_t *)&tim);
+			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].arrival-tim);
-			//printf("Percentalong: %f ", percentalong*(float)100);
-			//printf("Coords: Lat:%f, Lng:%f ", crd.lat, crd.lng);
-			//printf("Next coords: Lat:%f, Lng:%f", dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
-			//printf("Next location: %s ", dests.dest[i+1].city);
-			//printf("Time to next location :%f ",(float)(dests.dest[i+1].arrival-tim)/60.0F);
-			//printf("Last location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i].city, status, (utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
 			printf("Next stop:%s,Arriving in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
-			//printf("Next stop: %s, Time to next stop:%li\n",dests.dest[i+1].city, dests.dest[i+1].arrival-tim);
-			printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
+			//printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec); /*Intentionally commented out*/
 			sleep(SLEEPTIME);
 			clr();
 			tim = (long)time(NULL)-offset;
 		}
-		status = "Landed";
 		while (tim<dests.dest[i+1].departure){ /*we have arrived/landed*/
                         showworld(dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
-			struct tm *utc = gmtime((time_t *)&tim);
-			printf("Current location:%s, Status:%s, UTC Time:%d-%d-%d %2d:%02d:%02d\n",dests.dest[i+1].city, status,(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec);
+			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
+			int eta = (int)(dests.dest[i+1].departure-tim);
+			printf("Current stop:%s,Departing in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
 			sleep(SLEEPTIME);
 			clr();
                         tim = (long)time(NULL)-offset;
 		}
 		clr();
 	}
-	//free(status);
 	return 0;
 }
