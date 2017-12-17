@@ -98,10 +98,10 @@ int main(void){
 			end.lng = dests.dest[i+1].location.lng;
 			struct coords crd = slerp(start,end,percentalong);
 			showworld(crd.lat,crd.lng);
-			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
+			struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].arrival-tim);
-			printf("Next stop:%s,Arriving in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
-			//printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec); /*Intentionally commented out*/
+			printf("Last stop:%s,Next stop:%s,Arriving in:%02d:%02d\n",dests.dest[i].city,dests.dest[i+1].city,eta/60,eta%60);
+			printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec); /*Intentionally commented out*/
 			sleep(SLEEPTIME);
 			clr();
 			tim = (long)time(NULL)-offset;
@@ -110,10 +110,17 @@ int main(void){
                         showworld(dests.dest[i+1].location.lat, dests.dest[i+1].location.lng);
 			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].departure-tim);
-			printf("Current stop:%s,Departing in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
+			if((i+2)>=dests.length){
+				printf("Current stop:%s, the end. Press any key to exit.\n",dests.dest[i+1].city);
+				getchar();
+				exit(0);
+			}
+			else{
+				printf("Current stop:%s,Departing in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
+			}
 			sleep(SLEEPTIME);
 			clr();
-                        tim = (long)time(NULL)-offset;
+			tim = (long)time(NULL)-offset;
 		}
 		clr();
 	}

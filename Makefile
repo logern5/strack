@@ -1,7 +1,8 @@
 CC=gcc
-CFLAGS=-lcurl -Wall -g #-g is debugging symbols for GDB
+CFLAGS=-lcurl -Wall
+#CFLAGS+=-g #Debugging flags for gdb, can be safely commented out
 ASCIIWORLDCFLAGS=-lgd -lshp -lm
-DEFAULT_MAP = `readlink -f ne_110m_land.shp`
+DEFAULT_MAP =`readlink -f ne_110m_land.shp`#readlink not supported on non-Cygwin Windows
 ASCIIWORLDCFLAGS += -DDEFAULT_MAP=\"$(DEFAULT_MAP)\"
 USRFLAGS=
 all: default
