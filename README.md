@@ -4,3 +4,5 @@ A C program that displays uses the Google Santa Tracker API to show Santa’s lo
 libcurl, libgd, libshp. These are in the Ubuntu packages `libcurl4-openssl-dev`, `libgd-dev`, `libshp-dev` respectively.
 ## Compilation
 Run `make` to compile the default way.
+## Usage
+Simply `./strack` (or `strack.exe` on Windows). It does not take any command line parameters
