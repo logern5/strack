@@ -40,7 +40,7 @@ struct query init(){
 	struct MemoryStruct a = http("https://santa-api.appspot.com/info?client=web");
 	cJSON *root = cJSON_Parse(a.memory);
 	q.fingerprint = (char *)malloc(255*sizeof(char));
-	strncpy(q.fingerprint,getfingerprint(root),255);
+	strncpy(q.fingerprint,"0",255); /*New API doesn't need fingerprint*/
 	cJSON_Delete(root);
 	q.rand = (char *)malloc(20*sizeof(char));
 	snprintf(q.rand,20,"%f",mathrand());

@@ -77,6 +77,13 @@ char* getinfo (struct query *q){
 	snprintf(request,512,"https://santa-api.appspot.com/info?rand=%s&client=web&language=%s&fingerprint=%s&routeOffset=%s&streamOffset=%s", q->rand, q->client, q->fingerprint, q->routeOffset, q->streamOffset);
 	struct MemoryStruct a = http(request);
 	free(request);
-	return a.memory;
+	cJSON *root = cJSON_Parse(a.memory);
+	cJSON *route = cJSON_GetObjectItemCaseSensitive(root,"route");
+	char *url = (char *)malloc(256*sizeof(char));
+	strncpy(url,route->valuestring,256);
+	cJSON_Delete(root);
+	free(a.memory);
+	struct MemoryStruct b = http(url);
+	return b.memory;
 }
 #endif
