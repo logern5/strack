@@ -12,7 +12,7 @@ long offset = TIMEOFFSET;
 #elif !defined(AUTO_JSON_OFFSET)
 long offset = 0;
 #endif
-#if defined(_WIN32) && !defined(_CYGWIN_)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #define clr() system("cls"); /*Clear screen on Windows using a cmd command*/
 #else
 #define clr() printf("\e[1;1H\e[2J"); /*POSIX clear screen, should work on Cygwin too*/
@@ -100,6 +100,9 @@ int main(void){
 			showworld(crd.lat,crd.lng);
 			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].arrival-tim);
+			#if defined(_WIN32) || defined(__CYGWIN__)
+			printf("\n");
+			#endif
 			printf("Last stop:%s,Next stop:%s,Arriving in:%02d:%02d\n",dests.dest[i].city,dests.dest[i+1].city,eta/60,eta%60);
 			//printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec); /*Intentionally commented out*/
 			sleep(SLEEPTIME);
@@ -116,6 +119,9 @@ int main(void){
 				exit(0);
 			}
 			else{
+				#if defined(_WIN32) || defined (__CYGWIN__)
+				printf("\n");
+				#endif
 				printf("Current stop:%s,Departing in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
 			}
 			sleep(SLEEPTIME);
