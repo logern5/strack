@@ -7,4 +7,4 @@ Run `make` to compile the default way.
 ## Usage
 Simply `./strack` (or `strack.exe` on Windows). It does not take any command line parameters
 ## Screenshots
-![Screenshot 1](D91224D3-52B2-4862-8128-46C753E1C3FC.png)
+![Screenshot 1](image1.png)
