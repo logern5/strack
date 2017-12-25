@@ -51,7 +51,6 @@ struct query init(){
 	return q;
 }
 int main(int argc, char **argv){
-	//#ifndef JFILE /*get responses from HTTP*/
 	char *resp = NULL;
 	if(argc==1){
 		struct query q = init();
@@ -61,8 +60,6 @@ int main(int argc, char **argv){
 		struct query q = init();
 		resp = getinfo(&q);
 	}
-	//#endif
-	//#ifdef JFILE /*get response from a local JSON file*/
 	else if(strcmp(argv[1],"json")==0){
 		FILE *file;
 		file = fopen("example.json","r");
@@ -77,33 +74,25 @@ int main(int argc, char **argv){
 		fread(resp,sizeof(char),size,(FILE *)file);
 		fclose(file);
 	}
-	//#endif
 	cJSON *respjson = cJSON_Parse(resp);
 	struct destinations dests = getdests(respjson);
 	cJSON_Delete(respjson);
 	free(resp);
-	//#if defined(AUTO_JSON_OFFSET)
 	long offset = 0L;
 	if (argc>1){
 		if((strcmp(argv[1],"json")==0)||(strcmp(argv[1],"auto")==0)){
 			long now = time(NULL);
 			long depart = dests.dest[0].departure;
 			offset = now-depart;
-			printf("ko\n");
 		}
 	}
-	//#endif
-	printf("OK\n");
 	long tim = (long)time(NULL)-offset;
 	if (tim < dests.dest[0].departure){
 		fprintf(stderr,"It is not Christmas Eve yet!\n");
 		fprintf(stderr,"Current POSIX time:%li\nDeparture POSIX time:%li\n", tim,dests.dest[0].departure);
 		exit(-1);
 	}
-	printf("nice meme\n");
-	printf("dests.length=%d\n", dests.length);
 	for(int i=0;i<dests.length;i++){
-		printf("K\n");
 		showworld(dests.dest[i].location.lat, dests.dest[i].location.lng);
 		while (tim<dests.dest[i+1].arrival){
 			long elapsedtime = tim-dests.dest[i].departure;
