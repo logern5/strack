@@ -1,5 +1,5 @@
 # strack
-A C program that displays uses the Google Santa Tracker API to show Santa’s location.
+A C program that uses the Google Santa Tracker API to show Santa’s location.
 ## Requirements
 libcurl, libgd, libshp. These are in the Ubuntu packages `libcurl4-openssl-dev`, `libgd-dev`, `libshp-dev` respectively. These are also in the Cygwin packages `libcurl-devel`, `libgd-devel`, and `libshp-devel`, respectively.
 ## Compilation
