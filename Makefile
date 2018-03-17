@@ -9,6 +9,6 @@ all: default
 default:
 	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS)
 autojson:
-	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET -DJFILE=\"example.json\"
+	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET -DJFILE=\"example.json\" #This isn't needed anymore as we have new runtime options
 auto:
-	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET
+	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET #Same as above

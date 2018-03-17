@@ -12,7 +12,7 @@ long offset = TIMEOFFSET;
 #elif !defined(AUTO_JSON_OFFSET)
 long offset = 0;
 #endif
-#if defined(_WIN32) && !defined(_CYGWIN_)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #define clr() system("cls"); /*Clear screen on Windows using a cmd command*/
 #else
 #define clr() printf("\e[1;1H\e[2J"); /*POSIX clear screen, should work on Cygwin too*/
@@ -50,34 +50,42 @@ struct query init(){
 	q.streamOffset = "0";
 	return q;
 }
-int main(void){
-	#ifndef JFILE /*get responses from HTTP*/
-	struct query q = init();
-	char *resp = getinfo(&q);
-	#endif
-	#ifdef JFILE /*get response from a local JSON file*/
-	FILE *file;
-	file = fopen(JFILE,"r");
-	if (file == NULL){
-		fprintf(stderr,"Error opening JSON file\n");
-		exit(-1);
+int main(int argc, char **argv){
+	char *resp = NULL;
+	if(argc==1){
+		struct query q = init();
+		resp = getinfo(&q);
 	}
-	fseek(file,0L,SEEK_END);
-	int size = ftell(file);
-	rewind(file);
-	char *resp = (char *)malloc(size*sizeof(char));
-	fread(resp,sizeof(char),size,(FILE *)file);
-	fclose(file);
-	#endif
+	else if (strcmp(argv[1],"auto")==0){
+		struct query q = init();
+		resp = getinfo(&q);
+	}
+	else if(strcmp(argv[1],"json")==0){
+		FILE *file;
+		file = fopen("example.json","r");
+		if (file == NULL){
+			fprintf(stderr,"Error opening JSON file example.json\n");
+			exit(-1);
+		}
+		fseek(file,0L,SEEK_END);
+		int size = ftell(file);
+		rewind(file);
+		resp = (char *)malloc(size*sizeof(char));
+		fread(resp,sizeof(char),size,(FILE *)file);
+		fclose(file);
+	}
 	cJSON *respjson = cJSON_Parse(resp);
 	struct destinations dests = getdests(respjson);
 	cJSON_Delete(respjson);
 	free(resp);
-	#if defined(AUTO_JSON_OFFSET)
-	long now = time(NULL);
-	long depart = dests.dest[0].departure;
-	long offset = now-depart;
-	#endif
+	long offset = 0L;
+	if (argc>1){
+		if((strcmp(argv[1],"json")==0)||(strcmp(argv[1],"auto")==0)){
+			long now = time(NULL);
+			long depart = dests.dest[0].departure;
+			offset = now-depart;
+		}
+	}
 	long tim = (long)time(NULL)-offset;
 	if (tim < dests.dest[0].departure){
 		fprintf(stderr,"It is not Christmas Eve yet!\n");
@@ -100,6 +108,9 @@ int main(void){
 			showworld(crd.lat,crd.lng);
 			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].arrival-tim);
+			#if defined(_WIN32) || defined(__CYGWIN__)
+			printf("\n");
+			#endif
 			printf("Last stop:%s,Next stop:%s,Arriving in:%02d:%02d\n",dests.dest[i].city,dests.dest[i+1].city,eta/60,eta%60);
 			//printf("UTC Time:%d-%d-%d %2d:%02d:%02d\n",(utc->tm_year)+1900, (utc->tm_mon)+1, utc->tm_mday, (utc->tm_hour)%24, utc->tm_min, utc->tm_sec); /*Intentionally commented out*/
 			sleep(SLEEPTIME);
@@ -116,6 +127,9 @@ int main(void){
 				exit(0);
 			}
 			else{
+				#if defined(_WIN32) || defined (__CYGWIN__)
+				printf("\n");
+				#endif
 				printf("Current stop:%s,Departing in:%02d:%02d\n",dests.dest[i+1].city,eta/60,eta%60);
 			}
 			sleep(SLEEPTIME);

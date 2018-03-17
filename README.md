@@ -6,3 +6,5 @@ libcurl, libgd, libshp. These are in the Ubuntu packages `libcurl4-openssl-dev`,
 Run `make` to compile the default way.
 ## Usage
 Simply `./strack` (or `strack.exe` on Windows). It does not take any command line parameters
+## Screenshots
+![Screenshot 1](image1.png)
