@@ -122,7 +122,7 @@ int main(int argc, char **argv){
 			//struct tm *utc = gmtime((time_t *)&tim); /*Intentionally commented out*/
 			int eta = (int)(dests.dest[i+1].departure-tim);
 			if((i+2)>=dests.length){
-				printf("Current stop:%s, the end. Press any key to exit.\n",dests.dest[i+1].city);
+				printf("Current stop:%s, the end. Press the ENTER key to exit.\n",dests.dest[i+1].city);
 				getchar();
 				exit(0);
 			}
