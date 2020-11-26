@@ -1,14 +1,18 @@
 CC=gcc
 CFLAGS=-lcurl -Wall
-#CFLAGS+=-g #Debugging flags for gdb, can be safely commented out
-ASCIIWORLDCFLAGS=-lgd -lshp -lm
-DEFAULT_MAP =ne_110m_land.shp#readlink not supported on non-Cygwin Windows
-ASCIIWORLDCFLAGS += -DDEFAULT_MAP=\"$(DEFAULT_MAP)\"
-USRFLAGS=
+CFLAGS+=-g #Debugging flags for gdb
+CFLAGS+=-lgd -lshp -lm
+DEFAULT_MAP=ne_110m_land.shp
 all: default
+clean:
+	rm *.o
 default:
-	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS)
-autojson:
-	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET -DJFILE=\"example.json\" #This isn't needed anymore as we have new runtime options
-auto:
-	$(CC) main.c -o strack $(CFLAGS) $(ASCIIWORLDCFLAGS) $(USRFLAGS) -DAUTO_JSON_OFFSET #Same as above
+	$(CC) -c lib/asciiworld/asciiworld.c -DDEFAULT_MAP='"$(DEFAULT_MAP)"'
+	$(CC) -c lib/cJSON/cJSON.c
+	$(CC) -c lib/curl/curllib.c
+	$(CC) -c main.c
+	$(CC) -c utils.c
+	$(CC) -c api.c
+	$(CC) main.o \
+	utils.o cJSON.o api.o asciiworld.o curllib.o \
+	-o strack $(CFLAGS)

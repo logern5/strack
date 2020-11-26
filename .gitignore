@@ -1,4 +1,3 @@
-example.json
 Notes.txt
 strack
 old
@@ -9,3 +8,5 @@ deps.txt
 deps3.txt
 deps4.txt
 *.exe
+infer-out
+*.o

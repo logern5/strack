@@ -1,3 +1,5 @@
+#ifndef ASCIIWORLD
+#define ASCIIWORLD
 #include <gd.h>
 #include <math.h>
 #include <shapefil.h>
@@ -993,3 +995,4 @@ int worldmain(int argc, char **argv)
     //exit(EXIT_SUCCESS); //we do not need to exit
     return 0;
 }
+#endif

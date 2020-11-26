@@ -1,7 +1,9 @@
-#include "lib/curl/curl.h"
-#include "lib/cjson/cJSONlib.h"
-#ifndef API
-#define API
+#include "lib/curl/curllib.h"
+#include "lib/cjson/cJSON.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 struct query{ /* Query to send to API */
 	char *rand;
 	char *client;
@@ -77,13 +79,23 @@ char* getinfo (struct query *q){ /* get JSON route/destination data from the API
 	snprintf(request,512,"https://santa-api.appspot.com/info?rand=%s&client=web&language=%s&fingerprint=%s&routeOffset=%s&streamOffset=%s", q->rand, q->client, q->fingerprint, q->routeOffset, q->streamOffset);
 	struct MemoryStruct a = http(request);
 	free(request);
+	/* Free memory inside of the query */
+	free(q->fingerprint);
+	free(q->rand);
 	cJSON *root = cJSON_Parse(a.memory);
+	if(root == NULL){
+		fprintf(stderr, "cJSON_Parse error\n");
+		exit(-1);
+	}
 	cJSON *route = cJSON_GetObjectItemCaseSensitive(root,"route");
 	char *url = (char *)malloc(256*sizeof(char));
+	if(url == NULL){
+		fprintf(stderr, "malloc() returned null\n");
+		exit(-1);
+	}
 	strncpy(url,route->valuestring,256);
 	cJSON_Delete(root);
 	free(a.memory);
 	struct MemoryStruct b = http(url);
 	return b.memory;
 }
-#endif

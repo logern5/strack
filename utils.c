@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
-#ifndef UTILS
-#define UTILS
+#include <time.h>
+
 struct coords{
 	float lat;
 	float lng;
@@ -45,4 +45,3 @@ float mathrand(){ /* return a random float */
 	float scale = rand()/(float)RAND_MAX;
 	return scale;
 }
-#endif
